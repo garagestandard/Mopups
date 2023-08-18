@@ -15,7 +15,6 @@ namespace Mopups.Platforms.iOS
     internal class PopupPageRenderer : UIViewController
     {
         private PopupPageHandler? _renderer;
-        private readonly UIGestureRecognizer _tapGestureRecognizer;
         private NSObject? _willChangeFrameNotificationObserver;
         private NSObject? _willHideNotificationObserver;
         private bool _isDisposed;
@@ -27,11 +26,6 @@ namespace Mopups.Platforms.iOS
         public PopupPageRenderer(PopupPageHandler handler)
         {
             _renderer = handler;
-
-            _tapGestureRecognizer = new UITapGestureRecognizer(OnTap)
-            {
-                CancelsTouchesInView = false
-            };
         }
 
         public PopupPageRenderer(IntPtr handle) : base(handle)
@@ -42,27 +36,12 @@ namespace Mopups.Platforms.iOS
         {
             if (disposing)
             {
-                _renderer = null; 
-                View?.RemoveGestureRecognizer(_tapGestureRecognizer);
+                _renderer = null;
             }
 
             base.Dispose(disposing);
             _isDisposed = true;
         }
-
-
-        private void OnTap(UITapGestureRecognizer e)
-        {
-            var view = e.View;
-            var location = e.LocationInView(view);
-            var subview = view.HitTest(location, null);
-
-            if (Equals(subview, view))
-            {
-                ((PopupPage)Handler.VirtualView).SendBackgroundClick();
-            }
-        }
-
 
         public override bool ShouldAutomaticallyForwardRotationMethods => true;
 
@@ -107,15 +86,6 @@ namespace Mopups.Platforms.iOS
 
             ModalPresentationStyle = UIModalPresentationStyle.OverCurrentContext;
             ModalTransitionStyle = UIModalTransitionStyle.CoverVertical;
-
-            View?.AddGestureRecognizer(_tapGestureRecognizer);
-        }
-
-        public override void ViewDidUnload()
-        {
-            base.ViewDidUnload();
-
-            View?.RemoveGestureRecognizer(_tapGestureRecognizer);
         }
 
         public override void ViewWillAppear(bool animated)
