@@ -33,7 +33,7 @@
 		<Authors>Tyson Hooker,Maksym Koshovyi,Aswin P G, Kirill Lyubimov, Martijn Van Dijk, Shane Neuville</Authors>
 		<Company>$(CompanyName)</Company>
 		<PackageTags>Mopups;Popups;Maui;rg;Xamarin;ios;android;Windows;MacOS;Mopups;Dialogs;macos;windows</PackageTags>
-		<Version>1.1.0</Version>
+		<Version>1.1.1-alpha.gs.1</Version>
 		<Title>Mopups (Maui Popups)</Title>
 		<PackageReleaseNotes>Added support for both Windows and MacOS</PackageReleaseNotes>
 		<IncludeSymbols>True</IncludeSymbols>
