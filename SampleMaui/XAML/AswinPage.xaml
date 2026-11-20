@@ -8,8 +8,7 @@
     Title="Aswin"
     BackgroundClicked="PopupPage_BackgroundClicked"
     BackgroundInputTransparent="False"
-    CloseWhenBackgroundIsClicked="True"
-    HasSystemPadding="False">
+    CloseWhenBackgroundIsClicked="True">
     <Mopups:PopupPage.Animation>
         <Animations:MoveAnimation PositionIn="Top" PositionOut="Top" />
     </Mopups:PopupPage.Animation>
