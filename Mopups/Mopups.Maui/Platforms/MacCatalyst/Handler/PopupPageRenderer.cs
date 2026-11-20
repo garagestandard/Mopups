@@ -80,7 +80,7 @@ namespace Mopups.Platforms.MacCatalyst
                     return;
 
                 var superviewFrame = handler.Handler.PlatformView.Superview.Frame;
-                var applicationFrame = UIScreen.MainScreen.ApplicationFrame;
+                var applicationFrame = UIScreen.MainScreen.Bounds;
 
                 var systemPadding = new Thickness
                 {
