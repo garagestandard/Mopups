@@ -59,14 +59,14 @@ namespace Mopups.Platforms.iOS
                     return;
 
                 var superviewFrame = handler.Handler.PlatformView.Superview.Frame;
-                var insets = handler.View?.Window?.SafeAreaInsets ?? UIEdgeInsets.Zero;
+                var applicationFrame = GetApplicationFrame(handler.View?.Window);
 
                 var systemPadding = new Thickness
                 {
-                    Left = insets.Left,
-                    Top = insets.Top,
-                    Right = insets.Right,
-                    Bottom = insets.Bottom + handler.KeyboardBounds.Height
+                    Left = applicationFrame.Left,
+                    Top = applicationFrame.Top,
+                    Right = applicationFrame.Right - applicationFrame.Width - applicationFrame.Left,
+                    Bottom = applicationFrame.Bottom - applicationFrame.Height - applicationFrame.Top + handler.KeyboardBounds.Height
                 };
 
                 if ((handler.Handler.VirtualView.Width != superviewFrame.Width && handler.Handler.VirtualView.Height != superviewFrame.Height)
@@ -78,6 +78,41 @@ namespace Mopups.Platforms.iOS
                     currentElement.BatchCommit();
                 }
             }
+        }
+
+        /// <summary>
+        /// Replacement for the deprecated <c>UIScreen.ApplicationFrame</c>: screen bounds minus the status bar.
+        /// </summary>
+        /// <param name="window">The popup's window, or <see langword="null"/> to use the active scene.</param>
+        /// <returns>The frame, or <see cref="CGRect.Empty"/> if no scene is available.</returns>
+        private static CGRect GetApplicationFrame(UIWindow? window)
+        {
+            var scene = window?.WindowScene ?? GetActiveWindowScene();
+
+            if (scene is null)
+                return CGRect.Empty;
+
+            var bounds = scene.Screen.Bounds;
+            var statusBarHeight = scene.StatusBarManager?.StatusBarFrame.Height ?? 0;
+
+            return new CGRect(bounds.X, bounds.Y + statusBarHeight, bounds.Width, bounds.Height - statusBarHeight);
+        }
+
+        /// <summary>
+        /// Gets the window scene to use when the popup view is not in a window yet.
+        /// </summary>
+        /// <remarks>
+        /// Prefers a foreground-active scene, then a foreground-inactive one, then any connected scene.
+        /// Must be called on the main thread.
+        /// </remarks>
+        /// <returns>The selected scene, or <see langword="null"/> if none is connected.</returns>
+        private static UIWindowScene? GetActiveWindowScene()
+        {
+            var scenes = UIApplication.SharedApplication.ConnectedScenes.OfType<UIWindowScene>().ToList();
+
+            return scenes.FirstOrDefault(s => s.ActivationState == UISceneActivationState.ForegroundActive)
+                ?? scenes.FirstOrDefault(s => s.ActivationState == UISceneActivationState.ForegroundInactive)
+                ?? scenes.FirstOrDefault();
         }
 
         public override void ViewDidLoad()
