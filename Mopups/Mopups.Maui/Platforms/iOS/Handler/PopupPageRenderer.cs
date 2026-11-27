@@ -59,14 +59,14 @@ namespace Mopups.Platforms.iOS
                     return;
 
                 var superviewFrame = handler.Handler.PlatformView.Superview.Frame;
-                var applicationFrame = UIScreen.MainScreen.ApplicationFrame;
+                var insets = handler.View?.Window?.SafeAreaInsets ?? UIEdgeInsets.Zero;
 
                 var systemPadding = new Thickness
                 {
-                    Left = applicationFrame.Left,
-                    Top = applicationFrame.Top,
-                    Right = applicationFrame.Right - applicationFrame.Width - applicationFrame.Left,
-                    Bottom = applicationFrame.Bottom - applicationFrame.Height - applicationFrame.Top + handler.KeyboardBounds.Height
+                    Left = insets.Left,
+                    Top = insets.Top,
+                    Right = insets.Right,
+                    Bottom = insets.Bottom + handler.KeyboardBounds.Height
                 };
 
                 if ((handler.Handler.VirtualView.Width != superviewFrame.Width && handler.Handler.VirtualView.Height != superviewFrame.Height)
